@@ -184,8 +184,8 @@
         }
 .mobile-controls {
     display: none;
-    margin-top: 20px;
     text-align: center;
+    margin-top: 20px;
 }
 
 .mobile-controls button {
@@ -193,6 +193,9 @@
     height: 60px;
     font-size: 24px;
     margin: 5px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -231,8 +234,7 @@
             <div class="score-board">Length: <span id="length">1</span></div>
         </div>
 
-        < id="game" width="400" height="400"></canvas>
-
+<canvas id="gameCanvas" width="400" height="400"></canvas>
         <div class="controls">
             <p>Use <strong>Arrow Keys</strong> or <strong>WASD</strong> to move the snake</p>
             <p>Press <strong>SPACE</strong> to pause/resume</p>
@@ -242,7 +244,7 @@
             <button class="btn-primary" onclick="togglePause()">Pause</button>
             <button class="btn-danger" onclick="resetGame()">Reset Game</button>
         </div>
-<div class="mobile-controls">
+        <div class="mobile-controls">
     <button onclick="changeDirection('up')">⬆️</button>
 
     <div>
