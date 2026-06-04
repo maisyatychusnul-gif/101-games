@@ -182,13 +182,30 @@
             font-weight: bold;
             color: #4CAF50;
         }
+.mobile-controls {
+    display: none;
+    margin-top: 20px;
+    text-align: center;
+}
 
+.mobile-controls button {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    margin: 5px;
+}
+
+@media (max-width: 768px) {
+    .mobile-controls {
+        display: block;
+    }
+}
         @media (max-width: 600px) {
             h1 {
                 font-size: 1.8em;
             }
 
-            #gameCanvas {
+            #game {
                 width: 100%;
                 max-width: 90vw;
                 height: auto;
@@ -214,7 +231,7 @@
             <div class="score-board">Length: <span id="length">1</span></div>
         </div>
 
-        <canvas id="gameCanvas" width="400" height="400"></canvas>
+        < id="game" width="400" height="400"></canvas>
 
         <div class="controls">
             <p>Use <strong>Arrow Keys</strong> or <strong>WASD</strong> to move the snake</p>
@@ -225,7 +242,15 @@
             <button class="btn-primary" onclick="togglePause()">Pause</button>
             <button class="btn-danger" onclick="resetGame()">Reset Game</button>
         </div>
+<div class="mobile-controls">
+    <button onclick="changeDirection('up')">⬆️</button>
 
+    <div>
+        <button onclick="changeDirection('left')">⬅️</button>
+        <button onclick="changeDirection('down')">⬇️</button>
+        <button onclick="changeDirection('right')">➡️</button>
+    </div>
+</div>
         <div class="stats">
             <div class="stat-item">
                 <div class="stat-label">Status</div>
@@ -533,7 +558,37 @@
                     break;
             }
         });
+function changeDirection(dir) {
+    switch(dir) {
+        case 'up':
+            if (dy === 0) {
+                nextDx = 0;
+                nextDy = -1;
+            }
+            break;
 
+        case 'down':
+            if (dy === 0) {
+                nextDx = 0;
+                nextDy = 1;
+            }
+            break;
+
+        case 'left':
+            if (dx === 0) {
+                nextDx = -1;
+                nextDy = 0;
+            }
+            break;
+
+        case 'right':
+            if (dx === 0) {
+                nextDx = 1;
+                nextDy = 0;
+            }
+            break;
+    }
+}
         // Start the game
         draw();
         requestAnimationFrame(update);
