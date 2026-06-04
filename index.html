@@ -1,20 +1,103 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>🎮 101 Games</title>
+  <title>🎮 101 Mini Games</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    h1 {
+      margin-top: 30px;
+      font-size: 40px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 40px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 15px;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    .btn:hover {
+      background: #45a049;
+    }
+  </style>
 </head>
 
 <body>
-  <h1>🎮 101 Games</h1>
 
-  <a href="mie-jangan-tumpah/">🍜 Mie Jangan Tumpah</a><br>
-  <a href="kejar-deadline/">⏰ Kejar Deadline</a><br>
-  <a href="boba-factory/">🧋 Boba Factory</a><br>
-  <a href="tebak-warna/">🎨 Tebak Warna</a><br>
-  <a href="barista-rush/">☕ Barista Rush</a><br>
-  <a href="mancing-mania/">🎣 Mancing Mania</a><br>
-  <a href="my-snake/">🐍 My Snake</a><br>
-  <a href="kucingku-lari/">🐱 Catch the Cat!</a>
+  <h1>🎮 101 Isya's Mini Games Collection</h1>
+  <p>Semua game, satu tempat. Pilih dan mainkan!</p>
+
+  <div class="container">
+
+    <div class="card">
+      <h2>🐍 My Snake</h2>
+      <a href="my-snake/" class="btn">Play</a>
+    </div>
+
+    <div class="card">
+      <h2>🐱 Catch The Cat</h2>
+      <a href="catch-the-cat/" class="btn">Play</a>
+    </div>
+
+    <div class="card">
+      <h2>🍜 Mie Jangan Tumpah</h2>
+      <a href="mie-jangan-tumpah/" class="btn">Play</a>
+    </div>
+
+    <div class="card">
+      <h2>⏰ Kejar Deadline</h2>
+      <a href="kejar-deadline/" class="btn">Play</a>
+    </div>
+
+    <div class="card">
+      <h2>🧋 Boba Factory</h2>
+      <a href="boba-factory/" class="btn">Play</a>
+    </div>
+
+    <div class="card">
+      <h2>🎨 Tebak Warna</h2>
+      <a href="tebak-warna/" class="btn">Play</a>
+    </div>
+
+    <div class="card">
+      <h2>☕ Barista Rush</h2>
+      <a href="barista-rush/" class="btn">Play</a>
+    </div>
+
+    <div class="card">
+      <h2>🎣 Mancing Mania</h2>
+      <a href="mancing-mania/" class="btn">Play</a>
+    </div>
+
+  </div>
 
 </body>
 </html>
