@@ -330,8 +330,9 @@ function init() {
     });
 
     el.btnPlay.addEventListener('click', startGame);
-
-    el.btnRetry.addEventListener('click', () => {
-        resetGame();
-        showGame();
-        init();
+el.btnRetry.addEventListener('click', () => {
+    resetGame();
+    showGame();
+});
+    
+init();
