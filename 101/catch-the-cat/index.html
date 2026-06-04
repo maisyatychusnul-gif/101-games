@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tangkap Kucing">
+    <meta name="theme-color" content="#FF9F5A">
+    <title>Tangkap Kucing Kabur 🐱</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        :root {
+            --primary: #FF9F5A;
+            --secondary: #FFA500;
+            --dark: #E67E3C;
+            --light: #FFB87D;
+            --blush: #FFB3A0;
+            --bg: linear-gradient(135deg, #FFF8F0 0%, #FFE8D6 100%);
+            --safe-top: max(12px, env(safe-area-inset-top));
+            --safe-bottom: max(12px, env(safe-area-inset-bottom));
+            --safe-left: max(12px, env(safe-area-inset-left));
+            --safe-right: max(12px, env(safe-area-inset-right));
+        }
+
+        body {
+            background: var(--bg);
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: max(8px, env(safe-area-inset-top)) 12px 12px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(255, 159, 90, 0.3);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 14px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 70px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .stat-box .label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--dark);
+            letter-spacing: 1px;
+        }
+
+        .stat-box .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Fredoka One', sans-serif;
+        }
+
+        header > div:nth-child(2) {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            flex: 1;
+            text-align: center;
+            min-width: 200px;
+        }
+
+        /* ===== GAME AREA ===== */
+        #game-area {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(180deg, rgba(255, 248, 240, 0.8) 0%, rgba(255, 232, 214, 0.8) 100%);
+            border-radius: 24px 24px 0 0;
+            margin: 12px 12px 0 12px;
+            overflow: hidden;
+            box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.1);
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
+        }
+
+        #cat {
+            position: absolute;
+            font-size: 3rem;
+            cursor: pointer;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.05s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            z-index: 10;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        #cat:active {
+            transform: translate(-50%, -50%) scale(0.95);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Bubble Chat */
+        .bubble {
+            position: absolute;
+            background: white;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.8);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 20;
+        }
+
+        .bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 0px solid transparent;
+            border-top: 6px solid white;
+        }
+
+        .bubble.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            animation: bubble-pop 1.5s ease forwards;
+        }
+
+        @keyframes bubble-pop {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            85% { opacity: 1; transform: translate(-50%, calc(-50% - 20px)) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, calc(-50% - 40px)) scale(0.8); }
+        }
+
+        /* Pop Text */
+        .pop-text {
+            position: absolute;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--secondary);
+            pointer-events: none;
+            animation: pop-float 0.8s ease forwards;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes pop-float {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+        }
+
+        /* ===== MODALS ===== */
+        .modal-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .modal-screen.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, white 0%, #FFF8F0 100%);
+            padding: 32px 24px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .modal-content h1,
+        .modal-content h2 {
+            font-family: 'Fredoka One', sans-serif;
+            color: var(--primary);
+            margin-bottom: 16px;
+            font-size: 1.8rem;
+        }
+
+        .modal-content p {
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .modal-content button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 16px;
+            margin-right: 8px;
+            box-shadow: 0 4px 12px rgba(255, 159, 90, 0.3);
+            transition: all 0.3s ease;
+            font-family: 'Nunito', sans-serif;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+            appearance: none;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .modal-content button:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 6px rgba(255, 159, 90, 0.3);
+        }
+
+        .modal-content button.secondary {
+            background: linear-gradient(135deg, #DCDCDC 0%, #B0B0B0 100%);
+        }
+
+        /* ===== ACHIEVEMENT TOAST ===== */
+        #achievement-toast {
+            position: fixed;
+            bottom: max(20px, env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%) translateY(200px);
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 16px rgba(255, 159, 90, 0.4);
+            z-index: 200;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+        }
+
+        #achievement-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #achievement-toast.hidden {
+            pointer-events: none;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+
+        /* Tablet (768px and down) */
+        @media (max-width: 768px) {
+            header {
+                padding: max(8px, env(safe-area-inset-top)) 12px 12px 12px;
+                gap: 6px;
+            }
+
+            .stat-box {
+                padding: 6px 10px;
+                min-width: 60px;
+            }
+
+            .stat-box .label {
+                font-size: 0.65rem;
+            }
+
+            .stat-box .value {
+                font-size: 1.4rem;
+            }
+
+            header > div:nth-child(2) {
+                font-size: 0.95rem;
+            }
+
+            #cat {
+                font-size: 3rem;
+            }
+
+            .modal-content {
+                padding: 24px 18px;
+            }
+
+            .modal-content h1,
+            .modal-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .modal-content p {
+                font-size: 0.9rem;
+            }
+
+            .modal-content button {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+                margin-right: 6px;
+            }
+        }
+
+        /* Mobile (480px and down) */
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+
+            header {
+                padding: max(8px, env(safe-area-inset-top)) 10px 12px 10px;
+                gap: 4px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .stat-box {
+                padding: 5px 10px;
+                min-width: 55px;
+            }
+
+            .stat-box .label {
+                font-size: 0.6rem;
+                letter-spacing: 0.5px;
+            }
+
+            .stat-box .value {
+                font-size: 1.2rem;
+            }
+
+            header > div:nth-child(2) {
+                font-size: 0.85rem;
+                min-width: auto;
+                flex-basis: 100%;
+                order: 3;
+                margin-top: 4px;
+            }
+
+            #game-area {
+                margin: 8px 8px 0 8px;
+                border-radius: 16px 16px 0 0;
+            }
+
+            #cat {
+                font-size: 2.5rem;
+            }
+
+            .bubble {
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+
+            .pop-text {
+                font-size: 1.2rem;
+            }
+
+            .modal-screen {
+                padding: 16px;
+            }
+
+            .modal-content {
+                padding: 20px 16px;
+                max-width: 95%;
+            }
+
+            .modal-content h1,
+            .modal-content h2 {
+                font-size: 1.3rem;
+                margin-bottom: 12px;
+            }
+
+            .modal-content p {
+                font-size: 0.85rem;
+                margin-bottom: 10px;
+            }
+
+            .modal-content button {
+                padding: 12px 18px;
+                font-size: 0.8rem;
+                margin-top: 12px;
+                margin-right: 4px;
+                min-width: 48px;
+                min-height: 48px;
+            }
+
+            #achievement-toast {
+                font-size: 0.85rem;
+                padding: 12px 18px;
+                bottom: max(16px, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Extra Small (320px and below) */
+        @media (max-width: 320px) {
+            .stat-box .value {
+                font-size: 1rem;
+            }
+
+            #cat {
+                font-size: 2rem;
+            }
+
+            .modal-content h1,
+            .modal-content h2 {
+                font-size: 1.2rem;
+            }
+
+            .modal-content button {
+                padding: 10px 14px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Landscape mode optimization */
+        @media (max-height: 500px) {
+            header {
+                padding: max(6px, env(safe-area-inset-top)) 8px 8px 8px;
+            }
+
+            .stat-box .value {
+                font-size: 1rem;
+            }
+
+            #cat {
+                font-size: 2rem;
+            }
+
+            .modal-content {
+                padding: 16px 12px;
+            }
+
+            .modal-content h1,
+            .modal-content h2 {
+                font-size: 1.2rem;
+                margin-bottom: 8px;
+            }
+
+            .modal-content p {
+                margin-bottom: 8px;
+            }
+
+            .modal-content button {
+                padding: 8px 14px;
+                font-size: 0.75rem;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="stat-box">
+            <div class="label">WAKTU</div>
+            <div class="value" id="timer">30</div>
+        </div>
+        <div>🐱 Tangkap Kucing! 🐱</div>
+        <div class="stat-box">
+            <div class="label">SKOR</div>
+            <div class="value" id="score">0</div>
+        </div>
+    </header>
+
+    <div id="game-area">
+        <div id="cat" onmousedown="catchCat(event)" ontouchstart="catchCat(event)">🐱</div>
+        <div id="bubble" class="bubble">Meong!</div>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="modal-screen">
+        <div class="modal-content">
+            <h1>🐱 Tangkap Kucing Kabur</h1>
+            <p>Tangkap kucing itu sebelum waktu habis!<br><br>Klik secepat mungkin 🏃💨</p>
+            <button onclick="gameStart()">Mulai Main ▶️</button>
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="modal-screen hidden">
+        <div class="modal-content">
+            <h2>⏰ Waktunya Habis!</h2>
+            <p id="result-msg">Hasil...</p>
+            <p style="font-weight: bold; color: var(--secondary); font-size: 1.2rem;">Skor: <span id="final-score">0</span></p>
+            <button onclick="gameStart()">Main Lagi 🔄</button>
+            <button class="secondary" onclick="resetAll()">Menu 🏠</button>
+        </div>
+    </div>
+
+    <!-- Achievement Toast -->
+    <div id="achievement-toast" class="hidden">
+        🏅 Achievement: "Pengangguran Profesional"
+    </div>
+
+    <script>
+        // === GAME CONFIG ===
+        const GAME_DURATION = 30;
+        
+        // === GAME STATE ===
+        let score = 0;
+        let timeLeft = GAME_DURATION;
+        let gameInterval = null;
+        let isPlaying = false;
+        let clickCount = 0;
+        let achievementUnlocked = false;
+        let audioInitialized = false;
+
+        // === DOM ELEMENTS ===
+        const cat = document.getElementById('cat');
+        const scoreEl = document.getElementById('score');
+        const timerEl = document.getElementById('timer');
+        const bubble = document.getElementById('bubble');
+        const gameArea = document.getElementById('game-area');
+        const startScreen = document.getElementById('start-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const resultMsg = document.getElementById('result-msg');
+        const finalScoreEl = document.getElementById('final-score');
+        const achievementToast = document.getElementById('achievement-toast');
+
+        // === AUDIO ===
+        let audioCtx = null;
+
+        function initAudio() {
+            if (audioInitialized) return;
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!audioCtx) {
+                    audioCtx = new AudioContext();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                audioInitialized = true;
+            } catch(e) {
+                console.log('Audio context not available');
+            }
+        }
+
+        function playMeow() {
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.3);
+                
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch(e) {
+                console.log('Audio error:', e);
+            }
+        }
+
+        // === MESSAGES ===
+        const messages = [
+            "meong!",
+            "jangan tangkap aku!",
+            "aku cuma bayi 😿",
+            "mana whiskas?",
+            "aku cepat kan?",
+            "kucing galak!! 😾"
+        ];
+
+        // === GAME FUNCTIONS ===
+        function moveCat() {
+            const rect = gameArea.getBoundingClientRect();
+            const catSize = 80;
+            const maxX = Math.max(0, rect.width - catSize - 20);
+            const maxY = Math.max(0, rect.height - catSize - 20);
+            
+            const newX = Math.random() * Math.max(0, maxX);
+            const newY = Math.random() * Math.max(0, maxY);
+            
+            cat.style.left = newX + 'px';
+            cat.style.top = newY + 'px';
+            cat.style.transform = 'translate(0, 0)';
+        }
+
+        function showBubble() {
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            bubble.textContent = msg;
+            bubble.classList.remove('show');
+            
+            void bubble.offsetWidth;
+            
+            bubble.style.left = cat.offsetLeft + 'px';
+            bubble.style.top = (cat.offsetTop - 50) + 'px';
+            bubble.classList.add('show');
+            
+            setTimeout(() => bubble.classList.remove('show'), 1500);
+        }
+
+        function createPopText(x, y) {
+            const pop = document.createElement('div');
+            pop.className = 'pop-text';
+            pop.textContent = '+1';
+            pop.style.left = x + 'px';
+            pop.style.top = y + 'px';
+            gameArea.appendChild(pop);
+            
+            setTimeout(() => {
+                if (pop.parentNode) pop.parentNode.removeChild(pop);
+            }, 800);
+        }
+
+        function catchCat(e) {
+            e.preventDefault();
+            if (!isPlaying) return;
+
+            score++;
+            scoreEl.textContent = score;
+            clickCount++;
+            
+            playMeow();
+
+            const rect = cat.getBoundingClientRect();
+            const areaRect = gameArea.getBoundingClientRect();
+            const popX = rect.left - areaRect.left + 15;
+            const popY = rect.top - areaRect.top + 15;
+            createPopText(popX, popY);
+
+            moveCat();
+
+            if (clickCount % (3 + Math.floor(Math.random() * 3)) === 0) {
+                showBubble();
+            }
+
+            if (score >= 50 && !achievementUnlocked) {
+                achievementUnlocked = true;
+                achievementToast.classList.remove('hidden');
+                void achievementToast.offsetWidth;
+                achievementToast.classList.add('show');
+                
+                setTimeout(() => {
+                    achievementToast.classList.remove('show');
+                    achievementToast.classList.add('hidden');
+                }, 4000);
+            }
+        }
+
+        function gameStart() {
+            score = 0;
+            timeLeft = GAME_DURATION;
+            clickCount = 0;
+            achievementUnlocked = false;
+            
+            scoreEl.textContent = '0';
+            timerEl.textContent = GAME_DURATION;
+            
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            
+            isPlaying = true;
+            moveCat();
+            
+            if (gameInterval) clearInterval(gameInterval);
+            
+            gameInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            isPlaying = false;
+            
+            let msg = "";
+            if (score < 10) msg = "Kucingnya terlalu lincah 😿";
+            else if (score <= 20) msg = "Lumayan! Kamu hampir jadi pawang kucing 😺";
+            else if (score <= 35) msg = "Wah, refleksmu cepat banget! 🐈";
+            else msg = "Kucing menyerah dan sekarang tinggal di rumahmu 🏆";
+            
+            resultMsg.textContent = msg;
+            finalScoreEl.textContent = score;
+            gameOverScreen.classList.remove('hidden');
+        }
+
+        function resetAll() {
+            score = 0;
+            timeLeft = GAME_DURATION;
+            clickCount = 0;
+            scoreEl.textContent = '0';
+            timerEl.textContent = GAME_DURATION;
+            gameOverScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+            
+            cat.style.left = '50%';
+            cat.style.top = '50%';
+            cat.style.transform = 'translate(-50%, -50%)';
+            
+            if (gameInterval) clearInterval(gameInterval);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            resetAll();
+            initAudio();
+        });
+
+        // Resume audio on any interaction
+        document.addEventListener('touchstart', initAudio, { once: true });
+        document.addEventListener('click', initAudio, { once: true });
+    </script>
+</body>
+</html>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary: #FF9F5A;
+            --secondary: #FFA500;
+            --dark: #E67E3C;
+            --light: #FFB87D;
+            --blush: #FFB3A0;
+            --bg: linear-gradient(135deg, #FFF8F0 0%, #FFE8D6 100%);
+        }
+
+        body {
+            background: var(--bg);
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            touch-action: none;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(255, 159, 90, 0.3);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 14px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 70px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-box .label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--dark);
+            letter-spacing: 1px;
+        }
+
+        .stat-box .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Fredoka One', sans-serif;
+        }
+
+        header > div:nth-child(2) {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            flex: 1;
+            text-align: center;
+            min-width: 200px;
+        }
+
+        /* ===== GAME AREA ===== */
+        #game-area {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(180deg, rgba(255, 248, 240, 0.8) 0%, rgba(255, 232, 214, 0.8) 100%);
+            border-radius: 24px 24px 0 0;
+            margin: 12px 12px 0 12px;
+            overflow: hidden;
+            box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        #cat {
+            position: absolute;
+            font-size: 3rem;
+            cursor: pointer;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.05s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            z-index: 10;
+            touch-action: none;
+            user-select: none;
+        }
+
+        #cat:active {
+            transform: translate(-50%, -50%) scale(0.95);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Bubble Chat */
+        .bubble {
+            position: absolute;
+            background: white;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.8);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 20;
+        }
+
+        .bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 0px solid transparent;
+            border-top: 6px solid white;
+        }
+
+        .bubble.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            animation: bubble-pop 1.5s ease forwards;
+        }
+
+        @keyframes bubble-pop {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            85% { opacity: 1; transform: translate(-50%, calc(-50% - 20px)) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, calc(-50% - 40px)) scale(0.8); }
+        }
+
+        /* Pop Text */
+        .pop-text {
+            position: absolute;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--secondary);
+            pointer-events: none;
+            animation: pop-float 0.8s ease forwards;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes pop-float {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+        }
+
+        /* ===== MODALS ===== */
+        .modal-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-screen.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, white 0%, #FFF8F0 100%);
+            padding: 32px 24px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h1,
+        .modal-content h2 {
+            font-family: 'Fredoka One', sans-serif;
+            color: var(--primary);
+            margin-bottom: 16px;
+            font-size: 1.8rem;
+        }
+
+        .modal-content p {
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .modal-content button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 16px;
+            margin-right: 8px;
+            box-shadow: 0 4px 12px rgba(255, 159, 90, 0.3);
+            transition: all 0.3s ease;
+            font-family: 'Nunito', sans-serif;
+            touch-action: manipulation;
+        }
+
+        .modal-content button:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 6px rgba(255, 159, 90, 0.3);
+        }
+
+        .modal-content button.secondary {
+            background: linear-gradient(135deg, #DCDCDC 0%, #B0B0B0 100%);
+        }
+
+        /* ===== ACHIEVEMENT TOAST ===== */
+        #achievement-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(200px);
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 16px rgba(255, 159, 90, 0.4);
+            z-index: 200;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+        }
+
+        #achievement-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #achievement-toast.hidden {
+            pointer-events: none;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+
+        /* Tablet (768px and down) */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 12px;
+                gap: 6px;
+            }
+
+            .stat-box {
+                padding: 6px 10px;
+                min-width: 60px;
+            }
+
+            .stat-box .label {
+                font-size: 0.65rem;
+            }
+
+            .stat-box .value {
+                font-size: 1.4rem;
+            }
+
+            header > div:nth-child(2) {
+                font-size: 0.95rem;
+            }
+
+            #cat {
+                font-size: 2.5rem;
+            }
+
+            .modal-content {
+                padding: 24px 18px;
+            }
+
+            .modal-content h1,
+            .modal-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .modal-content p {
+                font-size: 0.9rem;
+            }
+
+            .modal-content button {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+                margin-right: 6px;
+            }
+        }
+
+        /* Mobile (480px and down) */
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+
+            header {
+                padding: 8px 10px;
+                gap: 4px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .stat-box {
+                padding: 5px 10px;
+                min-width: 55px;
+            }
+
+            .stat-box .label {
+                font-size: 0.6rem;
+                letter-spacing: 0.5px;
+            }
+
+            .stat-box .value {
+                font-size: 1.2rem;
+            }
+
+            header > div:nth-child(2) {
+                font-size: 0.85rem;
+                min-width: auto;
+                flex-basis: 100%;
+                order: 3;
+                margin-top: 4px;
+            }
+
+            #game-area {
+                margin: 8px 8px 0 8px;
+                border-radius: 16px 16px 0 0;
+            }
+
+            #cat {
+                font-size: 2rem;
+            }
+
+            .bubble {
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+
+            .pop-text {
+                font-size: 1.2rem;
+            }
+
+            .modal-screen {
+                padding: 16px;
+            }
+
+            .modal-content {
+                padding: 20px 16px;
+                max-width: 95%;
+            }
+
+            .modal-content h1,
+            .modal-content h2 {
+                font-size: 1.3rem;
+                margin-bottom: 12px;
+            }
+
+            .modal-content p {
+                font-size: 0.85rem;
+                margin-bottom: 10px;
+            }
+
+            .modal-content button {
+                padding: 10px 18px;
+                font-size: 0.8rem;
+                margin-top: 12px;
+                margin-right: 4px;
+            }
+
+            #achievement-toast {
+                font-size: 0.85rem;
+                padding: 12px 18px;
+                bottom: 16px;
+            }
+        }
+
+        /* Extra Small (320px and below) */
+        @media (max-width: 320px) {
+            .stat-box .value {
+                font-size: 1rem;
+            }
+
+            #cat {
+                font-size: 1.5rem;
+            }
+
+            .modal-content h1,
+            .modal-content h2 {
+                font-size: 1.2rem;
+            }
+
+            .modal-content button {
+                padding: 8px 14px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Landscape mode optimization */
+        @media (max-height: 500px) {
+            header {
+                padding: 6px 8px;
+            }
+
+            .stat-box .value {
+                font-size: 1rem;
+            }
+
+            #cat {
+                font-size: 1.8rem;
+            }
+
+            .modal-content {
+                padding: 16px 12px;
+            }
+
+            .modal-content h1,
+            .modal-content h2 {
+                font-size: 1.2rem;
+                margin-bottom: 8px;
+            }
+
+            .modal-content p {
+                margin-bottom: 8px;
+            }
+
+            .modal-content button {
+                padding: 8px 14px;
+                font-size: 0.75rem;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="stat-box">
+            <div class="label">WAKTU</div>
+            <div class="value" id="timer">30</div>
+        </div>
+        <div>🐱 Tangkap Kucing! 🐱</div>
+        <div class="stat-box">
+            <div class="label">SKOR</div>
+            <div class="value" id="score">0</div>
+        </div>
+    </header>
+
+    <div id="game-area">
+        <div id="cat" onmousedown="catchCat(event)" ontouchstart="catchCat(event)">🐱</div>
+        <div id="bubble" class="bubble">Meong!</div>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="modal-screen">
+        <div class="modal-content">
+            <h1>🐱 Tangkap Kucing Kabur</h1>
+            <p>Tangkap kucing itu sebelum waktu habis!<br><br>Klik secepat mungkin 🏃💨</p>
+            <button onclick="gameStart()">Mulai Main ▶️</button>
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="modal-screen hidden">
+        <div class="modal-content">
+            <h2>⏰ Waktunya Habis!</h2>
+            <p id="result-msg">Hasil...</p>
+            <p style="font-weight: bold; color: var(--secondary); font-size: 1.2rem;">Skor: <span id="final-score">0</span></p>
+            <button onclick="gameStart()">Main Lagi 🔄</button>
+            <button class="secondary" onclick="resetAll()">Menu 🏠</button>
+        </div>
+    </div>
+
+    <!-- Achievement Toast -->
+    <div id="achievement-toast" class="hidden">
+        🏅 Achievement: "Pengangguran Profesional"
+    </div>
+
+    <script>
+        // === GAME CONFIG ===
+        const GAME_DURATION = 30;
+        
+        // === GAME STATE ===
+        let score = 0;
+        let timeLeft = GAME_DURATION;
+        let gameInterval = null;
+        let isPlaying = false;
+        let clickCount = 0;
+        let achievementUnlocked = false;
+
+        // === DOM ELEMENTS ===
+        const cat = document.getElementById('cat');
+        const scoreEl = document.getElementById('score');
+        const timerEl = document.getElementById('timer');
+        const bubble = document.getElementById('bubble');
+        const gameArea = document.getElementById('game-area');
+        const startScreen = document.getElementById('start-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const resultMsg = document.getElementById('result-msg');
+        const finalScoreEl = document.getElementById('final-score');
+        const achievementToast = document.getElementById('achievement-toast');
+
+        // === AUDIO ===
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playMeow() {
+            try {
+                initAudio();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.3);
+                
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch(e) {
+                console.log('Audio tidak tersedia');
+            }
+        }
+
+        // === MESSAGES ===
+        const messages = [
+            "meong!",
+            "jangan tangkap aku!",
+            "aku cuma bayi 😿",
+            "mana whiskas?",
+            "aku cepat kan?",
+            "kucing galak!! 😾"
+        ];
+
+        // === GAME FUNCTIONS ===
+        function moveCat() {
+            const rect = gameArea.getBoundingClientRect();
+            const catSize = 80; // Margin untuk kucing
+            const maxX = Math.max(0, rect.width - catSize - 20);
+            const maxY = Math.max(0, rect.height - catSize - 20);
+            
+            const newX = Math.random() * Math.max(0, maxX);
+            const newY = Math.random() * Math.max(0, maxY);
+            
+            cat.style.left = newX + 'px';
+            cat.style.top = newY + 'px';
+            cat.style.transform = 'translate(0, 0)';
+        }
+
+        function showBubble() {
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            bubble.textContent = msg;
+            bubble.classList.remove('show');
+            
+            // Force reflow
+            void bubble.offsetWidth;
+            
+            bubble.style.left = cat.offsetLeft + 'px';
+            bubble.style.top = (cat.offsetTop - 50) + 'px';
+            bubble.classList.add('show');
+            
+            setTimeout(() => bubble.classList.remove('show'), 1500);
+        }
+
+        function createPopText(x, y) {
+            const pop = document.createElement('div');
+            pop.className = 'pop-text';
+            pop.textContent = '+1';
+            pop.style.left = x + 'px';
+            pop.style.top = y + 'px';
+            gameArea.appendChild(pop);
+            
+            setTimeout(() => {
+                if (pop.parentNode) pop.parentNode.removeChild(pop);
+            }, 800);
+        }
+
+        function catchCat(e) {
+            e.preventDefault();
+            if (!isPlaying) return;
+
+            score++;
+            scoreEl.textContent = score;
+            clickCount++;
+            
+            playMeow();
+
+            // Show +1 text
+            const rect = cat.getBoundingClientRect();
+            const areaRect = gameArea.getBoundingClientRect();
+            const popX = rect.left - areaRect.left + 15;
+            const popY = rect.top - areaRect.top + 15;
+            createPopText(popX, popY);
+
+            // Move cat
+            moveCat();
+
+            // Show bubble randomly
+            if (clickCount % (3 + Math.floor(Math.random() * 3)) === 0) {
+                showBubble();
+            }
+
+            // Check achievement
+            if (score >= 50 && !achievementUnlocked) {
+                achievementUnlocked = true;
+                achievementToast.classList.remove('hidden');
+                void achievementToast.offsetWidth;
+                achievementToast.classList.add('show');
+                
+                setTimeout(() => {
+                    achievementToast.classList.remove('show');
+                    achievementToast.classList.add('hidden');
+                }, 4000);
+            }
+        }
+
+        function gameStart() {
+            // Reset state
+            score = 0;
+            timeLeft = GAME_DURATION;
+            clickCount = 0;
+            achievementUnlocked = false;
+            
+            scoreEl.textContent = '0';
+            timerEl.textContent = GAME_DURATION;
+            
+            // Hide modals
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            
+            // Start game
+            isPlaying = true;
+            moveCat();
+            
+            // Clear old interval if exists
+            if (gameInterval) clearInterval(gameInterval);
+            
+            gameInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            isPlaying = false;
+            
+            let msg = "";
+            if (score < 10) msg = "Kucingnya terlalu lincah 😿";
+            else if (score <= 20) msg = "Lumayan! Kamu hampir jadi pawang kucing 😺";
+            else if (score <= 35) msg = "Wah, refleksmu cepat banget! 🐈";
+            else msg = "Kucing menyerah dan sekarang tinggal di rumahmu 🏆";
+            
+            resultMsg.textContent = msg;
+            finalScoreEl.textContent = score;
+            gameOverScreen.classList.remove('hidden');
+        }
+
+        function resetAll() {
+            score = 0;
+            timeLeft = GAME_DURATION;
+            clickCount = 0;
+            scoreEl.textContent = '0';
+            timerEl.textContent = GAME_DURATION;
+            gameOverScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+            
+            cat.style.left = '50%';
+            cat.style.top = '50%';
+            cat.style.transform = 'translate(-50%, -50%)';
+            
+            if (gameInterval) clearInterval(gameInterval);
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            resetAll();
+        });
+    </script>
+</body>
+</html>
