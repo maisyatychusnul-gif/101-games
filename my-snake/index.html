@@ -183,18 +183,25 @@
             color: #4CAF50;
         }
 .mobile-controls {
-    display: none;
-    text-align: center;
+    display: block;
     margin-top: 20px;
 }
 
+.mobile-controls .row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
 .mobile-controls button {
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
-    margin: 5px;
-    border-radius: 12px;
+    width: 70px;
+    height: 70px;
     border: none;
+    border-radius: 16px;
+    font-size: 28px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    backdrop-filter: blur(10px);
     cursor: pointer;
 }
 
@@ -203,7 +210,9 @@
         display: block;
     }
 }
-        @media (max-width: 600px) {
+  .button-group button {
+    width: 100%;
+}
             h1 {
                 font-size: 1.8em;
             }
@@ -244,14 +253,18 @@
             <button class="btn-primary" onclick="togglePause()">Pause</button>
             <button class="btn-danger" onclick="resetGame()">Reset Game</button>
         </div>
-        <div class="mobile-controls">
-    <button onclick="changeDirection('up')">⬆️</button>
+       <div class="mobile-controls">
 
-    <div>
+    <div class="row">
+        <button onclick="changeDirection('up')">⬆️</button>
+    </div>
+
+    <div class="row">
         <button onclick="changeDirection('left')">⬅️</button>
         <button onclick="changeDirection('down')">⬇️</button>
         <button onclick="changeDirection('right')">➡️</button>
     </div>
+
 </div>
         <div class="stats">
             <div class="stat-item">
