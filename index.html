@@ -1,25 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>🎮 101 Mini Games</title>
+  <meta charset="UTF-8">
+  <title>🎮 101 isya's Mini Games Collection</title>
+
   <style>
     body {
-      font-family: Arial;
-      text-align: center;
+      margin: 0;
+      font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
+      text-align: center;
     }
 
     h1 {
       margin-top: 30px;
-      font-size: 40px;
+      font-size: 42px;
+    }
+
+    p {
+      opacity: 0.9;
+      margin-bottom: 30px;
     }
 
     .container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
-      padding: 40px;
+      padding: 30px;
+      max-width: 900px;
+      margin: auto;
     }
 
     .card {
@@ -27,11 +37,17 @@
       padding: 20px;
       border-radius: 15px;
       transition: 0.3s;
+      backdrop-filter: blur(10px);
     }
 
     .card:hover {
       transform: scale(1.05);
       background: rgba(255,255,255,0.2);
+    }
+
+    .title {
+      font-size: 20px;
+      margin-bottom: 10px;
     }
 
     .btn {
@@ -42,59 +58,69 @@
       color: white;
       text-decoration: none;
       border-radius: 8px;
+      font-weight: bold;
     }
 
     .btn:hover {
       background: #45a049;
+    }
+
+    .coming {
+      background: gray;
+      cursor: not-allowed;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>🎮 101 Isya's Mini Games Collection</h1>
-  <p>Semua game, satu tempat. Pilih dan mainkan!</p>
+  <h1>🎮 101 Mini Games</h1>
+  <p>Pilih game dan mainkan!</p>
 
   <div class="container">
 
+    <!-- GAME YANG SUDAH ADA -->
+
     <div class="card">
-      <h2>🐍 My Snake</h2>
+      <div class="title">🐍 My Snake</div>
       <a href="my-snake/" class="btn">Play</a>
     </div>
 
     <div class="card">
-      <h2>🐱 Catch The Cat</h2>
+      <div class="title">🐱 Catch The Cat</div>
       <a href="catch-the-cat/" class="btn">Play</a>
     </div>
 
     <div class="card">
-      <h2>🍜 Mie Jangan Tumpah</h2>
-      <a href="mie-jangan-tumpah/" class="btn">Play</a>
-    </div>
-
-    <div class="card">
-      <h2>⏰ Kejar Deadline</h2>
+      <div class="title">⏰ Kejar Deadline</div>
       <a href="kejar-deadline/" class="btn">Play</a>
     </div>
 
+    <!-- GAME BELUM ADA (AMAN, GA 404) -->
+
     <div class="card">
-      <h2>🧋 Boba Factory</h2>
-      <a href="boba-factory/" class="btn">Play</a>
+      <div class="title">🍜 Mie Jangan Tumpah</div>
+      <div class="btn coming">Coming Soon</div>
     </div>
 
     <div class="card">
-      <h2>🎨 Tebak Warna</h2>
-      <a href="tebak-warna/" class="btn">Play</a>
+      <div class="title">🧋 Boba Factory</div>
+      <div class="btn coming">Coming Soon</div>
     </div>
 
     <div class="card">
-      <h2>☕ Barista Rush</h2>
-      <a href="barista-rush/" class="btn">Play</a>
+      <div class="title">🎨 Tebak Warna</div>
+      <div class="btn coming">Coming Soon</div>
     </div>
 
     <div class="card">
-      <h2>🎣 Mancing Mania</h2>
-      <a href="mancing-mania/" class="btn">Play</a>
+      <div class="title">☕ Barista Rush</div>
+      <div class="btn coming">Coming Soon</div>
+    </div>
+
+    <div class="card">
+      <div class="title">🎣 Mancing Mania</div>
+      <div class="btn coming">Coming Soon</div>
     </div>
 
   </div>
