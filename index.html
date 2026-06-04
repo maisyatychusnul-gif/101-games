@@ -3,20 +3,87 @@
 <head>
     <title>101 Mini Games</title>
     <style>
-        body { text-align: center; padding: 50px; font-family: Arial; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        h1 { font-size: 2.5em; }
-        .games { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
-        .game-card { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 10px; min-width: 200px; }
-        .game-card a { background: #4CAF50; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 15px; }
-        .game-card a:hover { background: #45a049; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body { 
+            text-align: center; 
+            padding: 50px 20px; 
+            font-family: 'Arial', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white;
+            min-height: 100vh;
+        }
+        
+        h1 { 
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .games { 
+            display: flex; 
+            gap: 30px; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            margin-top: 30px;
+        }
+        
+        .game-card { 
+            background: rgba(255,255,255,0.1); 
+            padding: 30px; 
+            border-radius: 10px; 
+            min-width: 200px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-card h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .game-card a { 
+            background: #4CAF50; 
+            color: white; 
+            padding: 12px 30px; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            display: inline-block; 
+            margin-top: 15px;
+            transition: background 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .game-card a:hover { 
+            background: #45a049;
+        }
     </style>
 </head>
 <body>
-    <h1>🎮 101 Mini Games</h1>
+    <h1>🎮 101 Mini Games Collection</h1>
+    <p style="font-size: 1.1em; margin-bottom: 20px;">Semua game, satu tempat. Pilih dan mainkan!</p>
+    
     <div class="games">
         <div class="game-card">
             <h2>🐍 Snake Game</h2>
+            <p>Pegang makanan dan hindari dinding!</p>
             <a href="my%20snake/snake-game.html">Play</a>
+        </div>
+        
+        <div class="game-card">
+            <h2>🐱 Catch The Cat</h2>
+            <p>Tangkap kucing yang gesit!</p>
+            <a href="catch%20the%20cat/kucingku.html">Play</a>
         </div>
     </div>
 </body>
